@@ -31,10 +31,12 @@ def create_sql_agent():
         f"sqlite:///{BASE_DIR / 'chinook.db'}", sample_rows_in_table_info=2
     )
 
-    # Initialize model with longer timeout
+    # Initialize model with longer timeout. The model can be overridden via the
+    # OPENROUTER_MODEL env var. `gpt-oss-20b:free` is a currently available
+    # free-tier model that supports tool calling.
     # NOTE: ChatOpenRouter's `timeout` is in milliseconds, not seconds.
     model = ChatOpenRouter(
-        model="inclusionai/ling-3.0-flash:free",
+        model=os.environ.get("OPENROUTER_MODEL", "openai/gpt-oss-20b:free"),
         temperature=0,
         api_key=os.environ.get("OPENROUTER_API_KEY"),
         timeout=180_000,

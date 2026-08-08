@@ -20,7 +20,9 @@ Uses the [Chinook database](https://github.com/lerocha/chinook-database) - a sam
 ### Prerequisites
 
 - Python 3.11 or higher
-- Anthropic API key ([get one here](https://console.anthropic.com/))
+- Anthropic API key ([get one here](https://console.anthropic.com/)) — or an
+  OpenRouter API key for the free-tier variant (see
+  [Running with OpenRouter](#running-with-openrouter-free-tier))
 - (Optional) LangSmith API key for tracing ([sign up here](https://smith.langchain.com/))
 
 ### Installation
@@ -105,6 +107,51 @@ result = agent.invoke({
 
 print(result["messages"][-1].content)
 ```
+
+## Running with OpenRouter (free tier)
+
+Don't have an Anthropic API key? Two alternative entry points run the same
+agent through [OpenRouter](https://openrouter.ai/) using a free-tier model, so
+you can try the example at no cost.
+
+- `agent_openrouter.py` — the full Deep Agent (planning, filesystem, skills)
+  powered by an OpenRouter free-tier model.
+- `agent_simple.py` — a minimal variant built on `langchain.agents.create_agent`.
+  It is lighter-weight and a good fallback when free-tier rate limits make the
+  full Deep Agent slow.
+
+### Setup
+
+1. Create a free API key at [openrouter.ai/keys](https://openrouter.ai/keys).
+
+1. Add it to your `.env` (instead of `ANTHROPIC_API_KEY`):
+
+   ```
+   OPENROUTER_API_KEY=your_openrouter_api_key_here
+   ```
+
+1. (Optional) Override the model. The default is `openai/gpt-oss-20b:free`, a
+   free-tier model that supports tool calling. Free-tier availability changes
+   over time — if the default stops working, pick another `:free` model from the
+   [OpenRouter models list](https://openrouter.ai/models?q=free) and set:
+
+   ```
+   OPENROUTER_MODEL=some-provider/some-model:free
+   ```
+
+### Run
+
+```bash
+python agent_openrouter.py "How many customers are from Canada?"
+```
+
+```bash
+python agent_simple.py "What are the top 5 best-selling artists?"
+```
+
+> [!NOTE]
+> Free-tier models are rate-limited and occasionally return transient
+> `Provider returned error` responses. Re-running the query usually succeeds.
 
 ## How the Deep Agent Works
 

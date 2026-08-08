@@ -33,10 +33,12 @@ def create_sql_deep_agent():
         f"sqlite:///{BASE_DIR / 'chinook.db'}", sample_rows_in_table_info=3
     )
 
-    # Initialize OpenRouter free model (ling-3.0-flash is faster for tool use)
+    # Initialize OpenRouter free model. The model can be overridden via the
+    # OPENROUTER_MODEL env var. `gpt-oss-20b:free` is a currently available
+    # free-tier model that supports tool calling.
     # NOTE: ChatOpenRouter's `timeout` is in milliseconds, not seconds.
     model = ChatOpenRouter(
-        model="inclusionai/ling-3.0-flash:free",
+        model=os.environ.get("OPENROUTER_MODEL", "openai/gpt-oss-20b:free"),
         temperature=0,
         api_key=os.environ.get("OPENROUTER_API_KEY"),
         timeout=120_000,
